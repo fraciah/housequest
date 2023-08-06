@@ -25,7 +25,7 @@ HouseQuest is a web-based platform that connects landlords with potential tenant
 3. Clone this repository or download the source code.
 4. Set up the database by running `python manage.py makemigrations` and `python manage.py migrate`.
 5. Create an admin user by running `python manage.py createsuperuser` and following the prompts.
-6. Run the development server by running `python manage.py runserver`. Access it by navigating to `http://localhost:8000` in your web browser.
+6. Run the development server by running `python manage.py runserver`. Access it by navigating to `http://127.0.0.1:8000/` in your web browser.
 7. (Optional) Install ngrok to expose your local development server to the internet for testing callback URLs.
 
 
