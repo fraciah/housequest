@@ -1,0 +1,48 @@
+{% extends "account/index.html" %}
+{% load static %}
+
+{% block title %}Login{% endblock %} 
+
+{% block content %}
+<div class="flex justify-center items-center login-div m-2 p-2 sm:m-8 sm:p-8">
+    <div class="w-full sm:w-9/12 lg:w-6/12 rounded-lg shadow-lg p-6 bg-gradient-to-t from-neutral-100">
+        <h1 class="text-3xl font-bold text-center text-blue-600 mb-4">Login</h1>
+        <span class="mb-4 text-sm block text-center">
+            {% if msg %}
+            {{ msg | safe }}
+            {% else %}
+            Login page
+            {% endif %}
+        </span>
+        <form method="post">
+            {% csrf_token %}
+            <div class="flex flex-col items-center space-y-4 mb-3">
+                <div class="mb-2">
+                    <label class="block text-gray-700 font-bold mb-2" for="username">Username</label>
+                    {{ form.username }}
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-bold mb-2" for="password">Password</label>
+                    {{ form.password }}
+                </div>
+                <div class="flex justify-between mb-4 text-sm sm:text-base mx-6">
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" class="form-checkbox" checked>
+                        <span class="pr-8 sm:pr-16">Remember me</span>
+                    </label>
+                    <span><a href="#">Forgot Password</a></span>
+                </div>
+            </div>
+            
+            <div class="flex justify-center">
+                <button class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md font-bold transition duration-500 ease-in-out mb-3" type="submit">Login</button>
+            </div>
+            <div class="text-center">
+                <span class="text-gray-600">Not yet registered?</span>
+                <a href="{% url 'account:register' %}" class="text-blue-600 hover:text-blue-700">Register</a>
+            </div>
+
+        </form>
+    </div>
+</div>  
+{% endblock %}

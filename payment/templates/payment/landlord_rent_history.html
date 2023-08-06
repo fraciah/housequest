@@ -1,0 +1,45 @@
+{% extends "account/index.html" %}
+{% load humanize %}
+{% block title %}Landlord Rent History{% endblock %} 
+
+{% block content %}
+
+<div class="flex justify-center items-center mx-8 mt-8 mb-14">
+    <div class="p-12 bg-gradient-to-t from-neutral-300 overflow-x-auto">
+        <p class="text-center mb-3 text-blue-500 font-bold text-lg underline">Your tenants' rent payment history for <a href="{% url 'listing:view_listing' pk=listing.pk %}" class="hover:text-blue-600">{{ listing_name }} (All time)</a> </p>
+        <table class="border border-collapse w-max">
+            <thead>
+                <tr>
+                    <th class="border px-4 py-2"></th>
+                    <th class="border px-4 py-2 font-semibold">Tenant name</th>
+                    <th class="border px-4 py-2 font-semibold">Tenant No.</th>
+                    <th class="border px-4 py-2 font-semibold">Date paid</th>
+                    <th class="border px-4 py-2 font-semibold">Rent month</th>
+                    <th class="border px-1 py-2 font-semibold">Rent paid (Ksh)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for renting in rentings %}
+                <tr>
+                    <td class="border px-4 py-2">{{ forloop.counter }}</td>
+                    <td class="border px-4 py-2">{{ renting.renting_tenant }}</td>
+                    <td class="border px-4 py-2">{{ renting.tenant_phone_number }}</td>
+                    <td class="border px-4 py-2">{{ renting.transaction_date }}</td>                
+                    <td class="border px-4 py-2">{{ renting.transaction_date|date:"F" }}</td>
+                    <td class="border px-1 py-2">{{ renting.amount_paid|intcomma }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>    
+        </table>
+        <div class="mt-5 flex flex-col sm:flex-row items-center justify-between">
+            <div class="mb-4 sm:mb-0">
+                <p class="underline font-bold">Summary</p>
+                <p><span class="font-semibold">Total rent paid</span>: Ksh {{ total_rent_paid|intcomma }}</p>
+                <p><span class="font-semibold">Average rent paid</span>: Ksh {{ average_rent_paid|intcomma }}</p>
+            </div>
+            <a href="{% url 'payment:download_rent_history' pk=listing.pk %}" class="bg-blue-500 text-white p-2 rounded"><i class="fas fa-download"></i> Download the summary</a>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}

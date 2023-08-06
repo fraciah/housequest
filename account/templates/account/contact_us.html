@@ -1,0 +1,53 @@
+{% extends "account/index.html" %}
+{% load static %}
+
+{% block title %}Contact us{% endblock %} 
+
+{% block content %}
+<div class="mx-12 my-6 p-8 bg-gradient-to-tr from-neutral-300">
+    <p class="text-3xl font-bold mb-4">Contact us</p>
+    <p class="text-lg mb-5">We value your feedback and are here to assist you. Please feel free to reach out to us with any inquiries, suggestions, or concerns you may have. You can contact us through the following channels:</p>
+    <div class="mb-5">
+        <ol class="list-decimal space-y-5">
+            <li><span class="text-lg font-bold">Customer Support:</span>
+                <ol class="list-disc ml-6 text-lg">
+                    <li>Email: [support@housequest.com]</li>
+                    <li>Phone: [+1 (123) 456-7890]</li>
+                    <li>Operating Hours: Monday to Friday, 9:00 AM to 5:00 PM (EST)</li>
+                </ol>
+            </li>
+            <li><span class="text-lg font-bold">General Inquiries:</span>
+                <ol class="list-disc ml-6 text-lg">
+                    <li>Email: [info@housequest.com]</li>
+                    <li>Phone: [+1 (123) 456-7890]</li>
+                </ol>
+            </li>
+            <li><span class="text-lg font-bold">Technical Support:</span>
+                <ol class="list-disc ml-6 text-lg">
+                    <li>Email: [techsupport@housequest.com]</li>
+                    <li>Phone: [+1 (123) 456-7890]</li>
+                    <li>Operating Hours: Monday to Friday, 9:00 AM to 5:00 PM (EST)</li>
+                </ol>
+            </li>
+        </ol>
+    </div>
+    <div>
+        <ol start="4" class="list-decimal space-y-5">
+            <li><span class="text-lg font-bold">Mailing Address:</span>
+                <p class="text-lg">Rental System</p>
+                <p class="text-lg">123 Main Street</p>
+                <p class="text-lg">Nairobi, State, ZIP Code</p>    
+                <p class="text-lg">Kenya</p>  
+            </li>
+            <li><span class="text-lg font-bold">Social Media:</span>  
+                <p class="text-lg">Connect with us on social media for updates, news, and community discussions:</p>
+                <ol class="list-disc ml-6 text-lg">
+                    <li>Facebook: [facebook.com/housequest]</li>
+                    <li>Twitter: [twitter.com/housequest]</li>
+                    <li>Instagram: [instagram.com/housequest]</li>
+                </ol>
+            </li>
+        </ol>
+    </div>
+</div>
+{% endblock %}

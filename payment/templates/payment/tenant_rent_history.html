@@ -1,0 +1,46 @@
+{% extends "account/index.html" %}
+
+{% block title %}Tenant Rent History{% endblock %} 
+
+{% block content %}
+
+<div class="flex justify-center items-center mx-8 mt-8 mb-36">
+    <div class="p-12 bg-gradient-to-t from-neutral-300">
+        <p class="text-center mb-3 text-blue-500 font-bold text-lg underline">Your rent payment history for <a href="{% url 'listing:view_listing' pk=listing.pk %}" class="hover:text-blue-600">{{ listing_name }}</a> </p>
+
+        <table class="border border-collapse w-max">
+            <thead>
+                <tr>
+                    <th class="border px-4 py-2"></th>
+                    <th class="border px-4 py-2 font-semibold">Date paid</th>
+                    <th class="border px-4 py-2 font-semibold">Transaction phone no</th>
+                    <th class="border px-4 py-2 font-semibold">Rent month</th>
+                    <th class="border px-1 py-2 font-semibold">Rent paid (Ksh)</th>
+                    <th class="border px-1 py-2 font-semibold">Has moved in</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for renting in rentings %}
+                <tr>
+                    <td class="border px-4 py-2">{{ forloop.counter }}</td>
+                    <td class="border px-4 py-2">{{ renting.transaction_date }}</td>                
+                    <td class="border px-4 py-2">{{ renting.tenant_phone_number }}</td>
+                    <td class="border px-4 py-2">{{ renting.transaction_date|date:"F" }}</td>
+                    <td class="border px-1 py-2">{{ renting.amount_paid }}</td>
+                    <td class="border px-1 py-2">
+                        {% if renting.listing in rented_listings %}
+                            Yes
+                        {% else %}
+                            No
+                        {% endif %}
+                    </td>
+                    
+                </tr>
+                {% endfor %}
+            </tbody>
+            
+        </table>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,235 @@
+{% extends "account/index.html" %}
+{% load humanize %}
+
+{% block title %}View a listing{% endblock %} 
+
+{% block content %}
+<style>
+.listing-image {
+  width: 100%;
+  height: 90%;
+  object-fit: cover;
+}
+</style>
+<div class="bg-gray-200 p-4 sm:p-8">
+    <div class="flex flex-col sm:flex-row bg-gray-100">
+        <div class="w-full sm:w-1/2 px-4 bg-white rounded pt-6">
+            <img src="{{ listing.image.url }}" alt="img" class="listing-image">
+        </div>
+        <div class="w-full sm:w-1/2 px-4 py-2 bg-gray-100 rounded pt-6 ml-4 space-y-4">
+            <div class="flex items-center justify-between">
+                <div class="flex flex-col sm:flex-row items-start"> 
+                    <p class="text-2xl font-bold text-blue-500 mb-2 sm:mb-0"> 
+                      {{ listing.name }}
+                    </p>
+                    <p class="sm:ml-24 mt-1"> 
+                      <i class="fa-solid fa-calendar-days mr-1"></i>Date posted: {{ listing.display_date }}
+                    </p>
+                  </div>
+            </div>
+            <p>Listing type: {{ listing.listing_type }}</p>
+            <p class="text-lg"><i class="fas fa-map-marker-alt text-gray-600 mr-2"></i>{{ listing.location }}</p>
+            <p class="mb-2 text-base"><i class="fas fa-money-bill-wave text-gray-600 mr-1"></i>Ksh {{ listing.price|intcomma }} per month <span class="italic">(after moving in)</span></p>
+            <p class="text-gray-500 text-lg mb-2">{{ listing.description }}</p>
+            <p class="mb-2 text-base"><span class="font-semibold">Extra charges:</span> Ksh {{ listing.booking_fee|intcomma }} <span class="italic">(to be paid when booking)</span></p>
+            <p class="mb-6 text-base"><span class="font-semibold">Features: </span>{{ listing.features }}</p>
+
+            {% if user.is_landlord %}
+                <!-- <p><a href="{% url 'account:landlord' %}" class="text-blue-700 hover:text-blue-900">Back</a></p> -->
+                {% if listing.vacancies > 0 %}
+                    <p class="text-base"><span class="font-semibold">Vacancies: </span>{{ listing.vacancies }}</p>
+                {% else %}
+                    <p class="text-red-500 font-bold">No more vacancies </p>
+                {% endif %}
+
+            {% else %}
+                {% if request.user in listing.booked_by.all %}
+                <div id="popup-message" style="display: none;"></div>
+                <form id="pay-rent-form" action="{% url 'payment:pay_rent' pk=listing.pk %}" target="_blank">
+                    {% csrf_token %}
+                    <button id="pay-rent-button" type="submit" class="bg-green-500 hover:bg--700 text-white font-bold py-2 px-4 my-4 rounded ease-in-out hover:scale-95 flex items-center space-x-2">
+                        <i class="fas fa-coins"></i>
+                        <span class="ml-2">Pay Rent</span>
+                    </button>
+                </form>
+                {% if rent_month %}
+                    <p class="text-green-600 font-bold">You have paid rent for {{ rent_month }}.</p>
+                    <a href="{% url 'payment:tenant_rent_history' pk=user.pk listing_pk=listing.pk %}" class="text-sm text-blue-500 hover:text-blue-600">See rent payment history here</a>
+                {% endif %}
+                {% else %}
+                    <p class="text-base"><span class="font-semibold">Vacancies: </span>{{ listing.vacancies }}</p>
+                    <div id="popup-message" style="display: none;"></div>
+                    <form id="booking-form" action="{% url 'payment:book_listing' pk=listing.pk %}">
+                        {% csrf_token %}
+                        <button id="book-now-button" type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-4 rounded ease-in-out hover:scale-95 flex items-center space-x-2">
+                            <i class="fa-regular fa-calendar-plus"></i>
+                            <span class="ml-2">Book Now</span>
+                        </button>
+                    </form>
+                {% endif %}
+            {% endif %}
+
+
+            <!--Only the landlord who created the listing can edit--> 
+            {% if user.is_landlord %}
+            <div class="flex items-center justify-between">  
+                <a href="{% url 'listing:edit_listing' pk=listing.pk %}" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4  rounded mr-4">Edit</a> 
+                <a href="{% url 'payment:booking_report' pk=listing.pk %}" target="_blank" class="font-bold bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded">Report on listing</a>
+            </div>
+            <div>
+                <a href="{% url 'payment:landlord_rent_history' pk=listing.pk%}" class="text-sm text-blue-500 hover:text-blue-600">See rent payment history here</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="p-6 mt-4 bg-white">
+        {% if user.is_landlord %}
+        <div class="flex flex-col sm:flex-row">
+            <div class="flex-1 mb-7">
+                <p class="font-bold mb-2 underline">Your info:</p>
+                <p><span class="font-semibold">Username</span> : {{ listing.landlord }}</p>
+                <p><span class="font-semibold">Email</span> : {{ listing.landlord.email }}</p>
+                <p class="mb-2"><span class="font-semibold">Phone no</span>: {{ listing.landlord.phone_number }}</p>
+                <a href="{% url 'account:update_profile' %}" class="text-blue-500"><i class="fa-solid fa-pen-to-square mr-1"></i>Edit your details</a>
+            </div>
+            <div class="flex-1 overflow-x-auto">
+                <h2 class="text-center mb-1 font-bold">Tenants who have booked this listing</h2>
+                <div class="flex flex-col">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="border px-2 py-1"></th>
+                                <th class="border px-2 py-1 font-semibold">Tenant name</th>
+                                <th class="border px-2 py-1 font-semibold">Tenant no</th>
+                                <th class="border px-2 py-1 font-semibold">Transaction date</th>
+                                <th class="border px-2 py-1 font-semibold">Amount paid (Ksh)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in bookings %}
+                            <tr>
+                                <td class="border px-2 py-1">{{ forloop.counter }}</td>
+                                <td class="border px-2 py-1">{{ booking.booking_tenant }}</td>
+                                <td class="border px-2 py-1">{{ booking.tenant_phone_number }}</td>
+                                <td class="border px-2 py-1">{{ booking.transaction_date }}</td>
+                                <td class="border px-2 py-1">{{ booking.amount_paid|intcomma }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="flex justify-end mt-2">
+                        <a href="{% url 'listing:listing_bookings' pk=listing.pk %}" class="text-blue-500 hover:text-blue-600">See more...</a>
+                    </div>
+                </div> 
+            </div>
+        </div>
+
+        {% else %}
+        <div class="grid">
+            <h2 class="font-bold text-xl">Contact agent</h2>
+            <p>Feel free to reach out to the agent for any inquiries or comments: </p>
+
+            <!--to email page-->
+            <a href="https://mail.google.com/mail/?view=cm&to={{ listing.landlord.email }}&su=Regarding%20{{ listing.name }}" target="_blank" class="bg-red-500 hover:bg-white text-white hover:text-red-500 border border-red-500 py-2 px-4 rounded-lg text-center transition duration-500 ease-in-out mt-4">
+                <span class="flex items-center justify-center space-x-2">
+                    <i class="fas fa-envelope"></i>
+                    <span>Send Mail</span>
+                </span>
+            </a>
+
+            <!--to whatsapp chat page-->
+            <a href="{% url 'listing:whatsapp_chat' pk=listing.pk %}" target="_blank" class="bg-green-500 hover:bg-white text-white hover:text-green-500 border border-green-500 py-2 px-4 rounded-lg text-center transition duration-500 ease-in-out mt-4">
+                <span class="flex items-center justify-center space-x-2">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>Chat on Whatsapp</span>
+                </span>
+            </a>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+<script>
+    // get the form, button, and popup message elements
+    const bookingForm = document.querySelector('#booking-form');
+    const bookNowButton = document.querySelector('#book-now-button');
+    const payRentForm = document.querySelector('#pay-rent-form');
+    const payRentButton = document.querySelector('#pay-rent-button');
+    const popupMessage = document.querySelector('#popup-message');
+
+    // check if the bookingForm element exists
+    if (bookingForm) {
+        // add an event listener to the bookingForm's submit event
+        bookingForm.addEventListener('submit', function(event) {
+            // prevent the default form submission behavior
+            event.preventDefault();
+            // disable the button to prevent multiple submissions
+            bookNowButton.disabled = true;
+            // get the form data
+            const formData = new FormData(bookingForm);
+            // send the form data using AJAX
+            fetch(bookingForm.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                }
+            })
+            .then(response => response.text())
+            .then(data => {
+                // display the pop-up message
+                popupMessage.textContent = 'Please check your phone and enter your M-PESA pin to book. Refresh the page after successful payment.';
+                popupMessage.style.display = 'block';
+                // apply inline styles to the popupMessage element
+                popupMessage.style.color = 'green';
+                popupMessage.style.fontWeight = 'bold';
+                // re-enable the button
+                bookNowButton.disabled = false;
+            })
+            .catch(error => {
+                console.error('An error occurred:', error);
+                // re-enable the button
+                bookNowButton.disabled = false;
+            });
+        });
+    }
+
+    // check if the payRentForm element exists
+    if (payRentForm) {
+        // add an event listener to the payRentForm's submit event
+        payRentForm.addEventListener('submit', function(event) {
+            // prevent the default form submission behavior
+            event.preventDefault();
+            // disable the button to prevent multiple submissions
+            payRentButton.disabled = true;
+            // get the form data
+            const formData = new FormData(payRentForm);
+            // send the form data using AJAX
+            fetch(payRentForm.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                }
+            })
+            .then(response => response.text())
+            .then(data => {
+                // display the pop-up message
+                popupMessage.textContent = 'Please check your phone and enter your M-PESA pin to pay rent. Refresh the page after successful payment.';
+                popupMessage.style.display = 'block';
+                // apply inline styles to the popupMessage element
+                popupMessage.style.color = 'green';
+                popupMessage.style.fontWeight = 'bold';
+                // re-enable the button
+                payRentButton.disabled = false;
+            })
+            .catch(error => {
+                console.error('An error occurred:', error);
+                // re-enable the button
+                payRentButton.disabled = false;
+            });
+        });
+    }
+</script>
+{% endblock %}

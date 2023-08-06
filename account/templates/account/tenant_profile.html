@@ -1,0 +1,71 @@
+{% extends "account/index.html" %}
+
+{% block title %}Tenant Profile{% endblock %} 
+
+{% block content %}
+<div class="flex flex-col md:flex-row justify-between p-6 bg-gradient-to-tl from-neutral-200 pb-14">
+    <div class="m-4">
+        <div class="flex items-center justify-between">
+            <p class="text-center mb-3 text-blue-500 font-bold text-lg">Your profile</p>
+            <a href="{% url 'account:update_profile' %}"><i class="fa-solid fa-pen-to-square text-blue-500 mr-1"></i></a>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="border border-collapse w-max">
+                <tbody>
+                    <tr>
+                        <td class="border-2 px-4 py-2 font-semibold">Username:</td>
+                        <td class="border-2 px-4 py-2">{{ user.username }}</td>
+                    </tr>
+                    <tr>
+                        <td class="border-2 px-4 py-2 font-semibold">Email:</td>
+                        <td class="border-2 px-4 py-2">{{ user.email }}</td>
+                    </tr>
+                    <tr>
+                        <td class="border-2 px-4 py-2 font-semibold">Phone Number:</td>
+                        <td class="border-2 px-4 py-2">{{ user.phone_number }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="mt-8 overflow-x-auto">
+        <p class="text-center mb-3 text-blue-500 font-bold text-lg underline">Your booked listings</p>
+
+        <table class="border border-collapse w-max">
+            <thead>
+                <tr>
+                    <th class="border px-4 py-2"></th>
+                    <th class="border px-4 py-2 font-semibold">Listing</th>
+                    <th class="border px-4 py-2 font-semibold">Type of listing</th>
+                    <th class="border px-4 py-2 font-semibold">Location</th>
+                    <th class="border px-4 py-2 font-semibold">Date booked</th>
+                    <th class="border px-1 py-2 font-semibold">Booking paid (Ksh)</th>
+                    <th class="border px-1 py-2 font-semibold">Has moved in</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td class="border px-4 py-2">{{ forloop.counter }}</td>
+                    <td class="border px-4 py-2 hover:text-blue-500"><a href="{% url 'listing:view_listing' pk=booking.listing.pk %}">{{ booking.listing.name }}</a></td>
+                    <td class="border px-4 py-2">{{ booking.listing.listing_type }}</td>
+                    <td class="border px-4 py-2">{{ booking.listing.location }}</td>
+                    <td class="border px-4 py-2">{{ booking.transaction_date }}</td>
+                    <td class="border px-1 py-2">{{ booking.amount_paid }}</td>
+                    <td class="border px-1 py-2">
+                        {% if booking.listing in rented_listings %}
+                            Yes
+                        {% else %}
+                            No
+                        {% endif %}
+                    </td>
+                    
+                </tr>
+                {% endfor %}
+            </tbody>
+            
+        </table>
+    </div>
+</div>
+{% endblock %}

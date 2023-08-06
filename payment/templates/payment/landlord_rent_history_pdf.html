@@ -1,0 +1,61 @@
+{% load humanize %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Rent history</title>
+    <style>
+        h1{
+            text-decoration: underline;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 6px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .number-column {
+            width: 30px;
+        }
+    </style>
+</head>
+<body>
+    <img class="imgLogo" src="{% static 'images/logo.PNG' %}" alt="imgLogo">
+    <h1>Your tenants' rent payment history for {{ listing_name }} (All time)</h1>
+    <table>
+        <thead>
+            <tr>
+                <th class="number-column">#</th>
+                <th>Tenant name</th>
+                <th>Tenant No.</th>
+                <th>Date paid</th>
+                <th>Rent month</th>
+                <th>Rent paid (Ksh)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for renting in rentings %}
+            <tr>
+                <td class="number-column">{{ forloop.counter }}</td>
+                <td>{{ renting.renting_tenant }}</td>
+                <td>{{ renting.tenant_phone_number }}</td>
+                <td>{{ renting.transaction_date }}</td>                
+                <td>{{ renting.transaction_date|date:"F" }}</td>
+                <td>{{ renting.amount_paid|intcomma }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>    
+    </table>
+    <h2>Summary</h2>
+    <p>Total rent paid: Ksh {{ total_rent_paid|intcomma }}</p>
+    <p>Average rent paid: Ksh {{ average_rent_paid|intcomma }}</p>
+</body>
+</html>

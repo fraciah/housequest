@@ -1,0 +1,75 @@
+{% extends "account/index.html" %}
+{% load static %}
+
+{% block title %}Register{% endblock %} 
+
+{% block content %}
+<div class="flex flex-col mb-4 register-div">
+    <div class="flex flex-col sm:flex-row m-4 sm:m-12">
+        <div class="relative w-full sm:w-1/2 mb-4 sm:mb-0">
+            <img src="{% static 'images/carousel4.jpeg' %}" alt="img" class="absolute inset-0 h-full w-full object-cover">
+        </div>
+        <div class="items-center py-6 sm:py-12 px-4 sm:pl-20 bg-gray-200 w-full sm:w-1/2">
+            <h1 class="text-3xl font-bold mb-5 text-blue-600 text-center sm:text-left">Registration</h1>
+            <span class="mb-5 text-center">
+                {% if msg %}
+                    {{ msg | safe }}
+                {% else %}
+                    HouseQuest
+                {% endif %}
+            </span>
+            <form class="flex flex-col" method="post">
+                {% csrf_token %}
+                <div class="flex flex-col mb-5 w-full sm:w-80">
+                    <label for="username" class="font-bold mb-2">Username</label>
+                    {{ form.username }}
+                </div>
+                <div class="flex flex-col mb-5 w-full sm:w-80">
+                    <label for="email" class="font-bold mb-2">Email</label>
+                    {{ form.email}}
+                </div>
+                <div class="flex flex-col mb-5 w-full sm:w-80">
+                    <label for="phone_number" class="font-bold mb-2">Phone number</label>
+                    {{ form.phone_number }}
+                </div>
+                <div class="flex flex-col mb-5 w-full sm:w-80">
+                    <label for="password" class="font-bold mb-2">Password</label>
+                    {{ form.password1 }}
+                </div>
+                <div class="flex flex-col mb-5 w-full sm:w-80">
+                    <label for="password" class="font-bold mb-2">Confirm Password</label>
+                    {{ form.password2 }}
+                </div>
+                <!-- <div class="flex flex-col mb-5">
+                    <label class="flex items-center font-bold">
+                        <span class="caption">Admin</span>    
+                        {{ form.is_admin }}
+                    </label>
+                </div> -->
+                <div class="flex flex-col mb-5 w-full sm:w-80">
+                    <label class="font-bold mb-2">
+                        Are you a tenant or a landlord?
+                    </label>
+                    <label class="flex items-center text-lg">
+                        <span class="caption">Tenant</span>
+                        {{ form.is_tenant }}
+                    </label>
+                    <label class="flex items-center text-lg">
+                        <span class="caption">Landlord</span>
+                        {{ form.is_landlord }}
+                    </label>
+                </div>
+                
+                <span class="text-red-600 mb-6">{{ form.errors }}</span>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md w-full sm:w-80 transition duration-400 ease-in-out mb-3">
+                    Register
+                </button>
+                <div class="text-center sm:text-left">
+                    <span class="text-gray-600">Already have an account?</span>
+                    <a href="{% url 'account:login' %}" class="text-blue-600 hover:text-blue-700">Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

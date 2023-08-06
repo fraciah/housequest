@@ -1,0 +1,56 @@
+{% extends "account/index.html" %}
+
+{% block title %}Landlord{% endblock %} 
+
+{% block content %}
+<div class="p-4 sm:p-8 bg-gradient-to-tl from-neutral-300">
+  <div class="sm:flex">
+    <h1 class="text-xl sm:text-2xl text-gray-600 font-bold mb-4 sm:mr-16">Good {{ message }} <span class="text-black">{{ user.username }}</span></h1>
+    <!--search bar-->
+    <form class="flex items-center space-x-1 mb-3">
+      <input class="bg-gray-200 border border-gray-300 rounded p-2 w-20 sm:w-32 h-8 sm:h-10" name="Lt-l" type="search" placeholder="Listing type" aria-label="Search">
+      <input class="bg-gray-200 border border-gray-300 rounded p-2 w-20 sm:w-32 h-8 sm:h-10" name="location" type="search" placeholder="Location" aria-label="Search">
+      <select class="bg-gray-200 border border-gray-300 rounded p-2 w-20 sm:w-32 h-8 sm:h-10" name="price_range">
+          <option value="">Price range</option>
+          <option value="0-5000">Below 5k</option>
+          <option value="5000-10000">5k - 10k</option>
+          <option value="10000-20000">10k - 20k</option>
+          <option value="20000-50000">20k - 50k</option>
+          <option value="50000-100000">50k - 100k</option>
+          <option value="100000">Above 100k</option>
+      </select>
+      <button class="bg-blue-500 hover:bg-blue-700 text-white font-normal sm:font-bold sm:py-2 py-1 sm:px-4 px-2 rounded ml-2 transition duration-200 h-8 sm:h-10 w-14 sm:w-20" type="submit">Search</button>
+    </form>
+  </div>
+
+    <p class="text-sm sm:text-lg float-right bg-gray-950 bg-opacity-80 hover:bg-gray-800 transition duration-500 ease-in-out py-2 px-3 sm:px-4 text-white font-semibold sm:font-bold rounded"><a href="{% url 'listing:add_listing' %}">Add a listing</a></p>
+
+
+  <p class="text-base sm:text-xl font-semibold mb-2 text-center mt-14">You have {{ listings.count }} listings:</p>
+
+  <!--if no search match is found-->
+  {% if no_results %}
+  <p class="text-red-600 text-lg font-semibold">No results found, please try again</p>
+  
+  {% else %}
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4 bg-gray-200 p-6">
+    {% for listing in listings %}
+      <div class="bg-white h-auto rounded shadow-lg overflow-hidden p-4 hover:shadow-2xl transform hover:scale-105 transition duration-200">
+        <div class="w-full mb-4">
+          <img class="rounded w-64 h-40 object-cover" src="{{ listing.image.url }}" alt="img">
+        </div>
+        <div class="w-full">
+          <h3 class="text-xl font-bold">{{ listing.name }}</h3>
+          <p>{{ listing.listing_type }}</p>
+          <p class="text-gray-500 text-base">{{ listing.description|slice:"0:50" }}...</p>
+          <p class="text-blue-600 text-sm mt-2"><a href="{% url 'listing:view_listing' pk=listing.pk %}">View details</a></p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  
+  {% endif %}
+  
+</div>
+
+{% endblock %}

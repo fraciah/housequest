@@ -1,0 +1,265 @@
+{% extends "account/index.html" %}
+{% load humanize %}
+{% load static %}
+{% block title %}Admin-user{% endblock %} 
+
+{% block content %}
+<style>
+  .selected {
+    background-color: rgb(179, 178, 178); 
+  }
+  .overflow-y-auto {
+    max-height: 380px; 
+    overflow-y: auto;
+  }
+</style>
+<div class="p-4">
+  <h1 class="text-xl sm:text-2xl font-bold mb-4 border-b-2 text-gray-600">Good {{ message }} <span class="text-black">{{ user.username }}</span> </h1>
+  <!-- <div class="block sm:flex h-[400px]"> -->
+  <!-- <ul class="flex flex-row"></ul> -->
+  <div class="flex h-[400px] overflow-x-auto">
+    <!-- Left Side -->
+    <div class="w-full md:w-1/6 bg-gray-200 md:pb-10 flex flex-col">
+      <div class="p-4">
+        <h2 class="font-bold mb-2 pl-1">Menu</h2>
+        <ul>
+          <li class="py-2 pl-1">
+            <a href="#users" class="menu-item">Users</a>
+          </li>
+          <li class="py-2 pl-1">
+            <a href="#landlords" class="menu-item">Landlords</a>
+          </li>
+          <li class="py-2 pl-1">
+            <a href="#tenants" class="menu-item">Tenants</a>
+          </li>
+          <li class="py-2 pl-1">
+            <a href="#listings" class="menu-item">Listings</a>
+          </li>
+          <li class="py-2 pl-1">
+            <a href="#visualizations" class="menu-item">Visualizations</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <!-- Right Side -->
+    <div class="w-5/6 p-4">      
+      <!-- Users Information -->
+      <div id="users-content" class="overflow-y-auto" style="display: none;">
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="font-bold">Users Information</h2>
+          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"><a href="{% url 'account:report' 'users' %}" target="_blank">Get users report</a></button>
+        </div>
+        
+        <table class="w-full border-collapse">
+          <p>Total users: {{ total_users.count }}</p>
+          <thead>
+            <tr>
+              <th class="px-2 py-2"></th>
+              <th class="px-2 py-2">Username</th>
+              <th class="px-2 py-2">User type</th>              
+              <th class="px-2 py-2">Email</th>
+              <th class="px-2 py-2">Phone number</th>
+              <th class="px-2 py-2">Date joined</th>
+              <th class="px-2 py-2">Last logged in</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!--iterate over the users and display their information -->
+            {% for user in total_users %}
+            <tr>
+              <td class="border px-2 py-2">{{ forloop.counter }}</td>
+              <td class="border px-2 py-2">{{ user.username }}</td>
+              <td class="border px-2 py-2">{% if user.is_landlord %}
+                Landlord
+              {% elif user.is_tenant %}
+                Tenant
+              {% else %}
+                N/A
+              {% endif %}</td>
+              <td class="border px-2 py-2">{{ user.email }}</td>
+              <td class="border px-2 py-2">{{ user.phone_number }}</td>
+              <td class="border px-2 py-2">{{ user.date_joined }}</td>
+              <td class="border px-2 py-2">{{ user.last_login }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      
+
+
+      <!-- Landlords Information -->
+      <div id="landlords-content" class="overflow-y-auto" style="display: none;">
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="font-bold">Landlords Information</h2>
+          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"><a href="{% url 'account:report' 'landlords' %}" target="_blank">Get landlords report</a></button>
+        </div>
+        <table>
+          <p>Number of landlords: {{ landlords.count }} </p>
+          <thead>
+            <tr>
+              <th class="px-2 py-2"></th>
+              <th class="px-2 py-2">Username</th>
+              <th class="px-2 py-2">Email</th>
+              <th class="px-2 py-2">Phone No</th>
+              <th class="px-2 py-2">Date joined</th>
+              <th class="px-2 py-2">Last logged in</th>
+              <th class="px-2 py-2">No of listings</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!--iterate over the landlords and display their information-->
+            {% for landlord in landlords %}
+            <tr>
+              <td class="border px-4 py-2">{{ forloop.counter }}</td>
+              <td class="border px-4 py-2">{{ landlord.username }}</td>
+              <td class="border px-4 py-2">{{ landlord.email }}</td>
+              <td class="border px-4 py-2">{{ landlord.phone_number }}</td>
+              <td class="border px-4 py-2">{{ landlord.date_joined }}</td>
+              <td class="border px-4 py-2">{{ landlord.last_login }}</td>
+              <td class="border px-4 py-2">{{ landlord.listingitem_set.count }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Tenants Information -->
+      <div id="tenants-content" class="overflow-y-auto" style="display: none;">
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="font-bold">Tenants Information</h2>
+          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"><a href="{% url 'account:report' 'tenants' %}" target="_blank">Get tenants report</a></button>
+        </div>
+        <p>Number of tenants: {{ tenants.count }}</p>
+        <table>
+          <thead>
+            <tr>
+              <th class="px-4 py-2"></th>
+              <th class="px-4 py-2">Username</th>
+              <th class="px-4 py-2">Email</th>
+              <th class="px-4 py-2">Phone No</th>
+              <th class="px-4 py-2">Date joined</th>
+              <th class="px-4 py-2">Last logged in</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!--iterate over the landlords and display their information-->
+            {% for tenant in tenants %}
+            <tr>
+              <td class="border px-4 py-2">{{ forloop.counter }}</td>
+              <td class="border px-4 py-2">{{ tenant.username }}</td>
+              <td class="border px-4 py-2">{{ tenant.email }}</td>
+              <td class="border px-4 py-2">{{ tenant.phone_number }}</td>
+              <td class="border px-4 py-2">{{ tenant.date_joined }}</td>
+              <td class="border px-4 py-2">{{ tenant.last_login }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Listings Information -->
+      <div id="listings-content" class="overflow-y-auto" style="display: none;">
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="font-bold">Listings Information</h2>
+          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"><a href="{% url 'account:report' 'listings' %}" target="_blank">Get listings report</a></button>
+        </div>
+        <table class="w-full border-collapse">
+          <p>Total listings: {{ listings.count }} (including those with no vacancies)</p>
+          <thead>
+            <tr>
+              <th class="px-2 py-2"></th>
+              <th class="px-2 py-2">Owner</th>
+              <th class="px-2 py-2">Name of listing</th>
+              <th class="px-2 py-2">Type</th>
+              <th class="px-2 py-2">Date posted</th>
+              <th class="px-2 py-2">Location</th>
+              <th class="px-2 py-2">Price</th>
+              <th class="px-2 py-2">Booking fee</th>
+              <th class="px-2 py-2">Vacancies</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Iterate over the listings and display their information -->
+            {% for listing in listings %}
+            <tr>
+              <td class="border px-2 py-2">{{ forloop.counter }}</td>
+              <td class="border px-2 py-2">{{ listing.landlord }}</td>  
+              <td class="border px-2 py-2">{{ listing.name }}</td>  
+              <td class="border px-2 py-2">{{ listing.listing_type }}</td>
+              <td class="border px-2 py-2">{{ listing.display_date }}</td>
+              <td class="border px-2 py-2">{{ listing.location }}</td>  
+              <td class="border px-2 py-2">{{ listing.price|intcomma }}</td>  
+              <td class="border px-2 py-2">{{ listing.booking_fee|intcomma }}</td>  
+              <td class="border px-2 py-2">{{ listing.vacancies }}</td>  
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Visualization -->
+      <div id="visualizations-content" class="overflow-y-auto" style="display: none;">
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="font-bold">Summary visualizations</h2>
+          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"><a href="{% url 'account:report' 'visualizations' %}" target="_blank">Get visuals report</a></button>
+        </div>
+        <!--Adding visualizations -->
+        <!--distribution of rental properties by type>>pie chart -->
+        <div id="chart_div" class="ml-40">
+          {{ chart_div|safe }}
+        </div>
+        <!--average rent price for each type of rental property>>bar chart -->
+        <div id="chart_div2" class="ml-40">
+          {{ chart_div2|safe }}
+        </div>
+        <!-- <h3>Distribution of tenants by their preferred rental property type>>pie chart</h3> -->
+        <div id="chart_div2" class="ml-40">
+          {{ chart_div3|safe }}
+        </div>
+        <!-- <h3>Number of landlords and tenants>>bar chart</h3> -->
+        <div id="chart_div2" class="ml-40">
+          {{ chart_div4|safe }}
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+<script>
+  // JavaScript code to handle menu item clicks and toggle content visibility
+  document.addEventListener("DOMContentLoaded", function() {
+    const menuItems = document.querySelectorAll(".menu-item");
+    const contentSections = document.querySelectorAll("#users-content, #landlords-content, #tenants-content, #listings-content, #visualizations-content");
+
+    // Show the Users tab and its content by default
+    document.querySelector("#users-content").style.display = "block";
+    document.querySelector(".menu-item[href='#users']").parentNode.classList.add("selected");
+
+    menuItems.forEach(function(item) {
+      item.addEventListener("click", function(e) {
+        e.preventDefault();
+        const target = item.getAttribute("href");
+
+        // Remove the "selected" class from all menu items
+        menuItems.forEach(function(menuItem) {
+          menuItem.parentNode.classList.remove("selected");
+        });
+
+        // Add the "selected" class to the clicked menu item's parent <li> element
+        item.parentNode.classList.add("selected");
+
+        // Hide all content sections
+        contentSections.forEach(function(section) {
+          section.style.display = "none";
+        });
+
+        // Show the selected content section
+        document.querySelector(target + "-content").style.display = "block";
+      });
+    });
+  });
+</script>
+{% endblock %}

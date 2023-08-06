@@ -1,0 +1,65 @@
+{% extends "account/index.html" %}
+{% load humanize %}
+{% block title %}Listing bookings{% endblock %} 
+
+{% block content %}
+<div class="flex flex-col sm:flex-row m-4 space-y-4 sm:space-y-0 sm:space-x-4 mt-8">
+    <div class="flex-1 p-2">
+        <p class="mb-5 font-semibold text-xl ">More details on <span class="text-blue-500 font-bold">{{ listing_name }}</span> bookings: </p>
+        <div class="space-y-6">
+            <!--dropdown menu for transaction date to search form-->
+            <form class="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-1">
+                <select class="bg-gray-200 border border-gray-300 rounded p-2 w-full sm:w-56" name="transaction_date">
+                    <option value="">Filter by transaction date</option>
+                    <option value="today">Today</option>
+                    <option value="this_week">This week</option>
+                    <option value="this_month">This month</option>
+                    <option value="all_time">All time</option>
+                </select>
+                <button class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded w-full sm:w-auto" type="submit">Search</button>
+            </form>
+            <!--end of dropdown menu-->
+            <!--booking table to show transactions based on filtered dates-->
+            <div class="overflow-x-auto">
+                <table class="w-full sm:w-max">
+                    <thead>
+                        <tr>
+                            <th class="border px-2 py-1"></th>
+                            <th class="border px-2 py-1 font-semibold">Tenant name</th>
+                            <th class="border px-2 py-1 font-semibold">Tenant no</th>
+                            <th class="border px-2 py-1 font-semibold">Transaction date</th>
+                            <th class="border px-2 py-1 font-semibold">Amount paid (Ksh)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in bookings %}
+                        <tr>
+                            <td class="border px-2 py-1">{{ forloop.counter }}</td>
+                            <td class="border px-2 py-1">{{ booking.booking_tenant }}</td>
+                            <td class="border px-2 py-1">{{ booking.tenant_phone_number }}</td>
+                            <td class="border px-2 py-1">{{ booking.transaction_date }}</td>
+                            <td class="border px-2 py-1">{{ booking.amount_paid|intcomma }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <!--end of table-->
+            <!--summary of table-->
+            <div>
+                <p class="font-bold underline">Summary:</p>
+                <p><span class="font-semibold">Total bookings:</span> {{ total_bookings }}</p>
+                <p><span class="font-semibold">Total revenue: </span>Ksh {{ total_revenue|intcomma }}</p>
+                <p class="mb-6"><span class="font-semibold">Average revenue per booking: </span>Ksh {{ average_revenue|intcomma }}</p>
+            </div>
+            <!--end of summary-->
+            <a href="{% url 'listing:listing_bookings_pdf' pk=listing.pk %}{% if request.GET.transaction_date %}?transaction_date={{ request.GET.transaction_date }}{% endif %}" class="bg-blue-500 text-white p-2 rounded"><i class="fas fa-download"></i> Download the summary</a>
+
+        </div>
+    </div>
+
+    <div class="flex-1 p-2">
+        <img src="{% url 'listing:bookings_chart' pk=listing.pk %}" alt="Bookings Chart" class="w-auto sm:w-full">
+    </div>
+</div>
+{% endblock %}

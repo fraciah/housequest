@@ -1,0 +1,75 @@
+.register-div,
+.login-div{
+    position: relative;
+}
+
+.login-div::before, 
+.register-div::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../images/carousel4.jpeg');
+    /*note the path*/
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.7;
+    z-index: -1;
+}
+.register-div::before{
+    filter: blur(2px);
+}
+
+/* Custom CSS styles for input fields */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"] {
+    height: 34px; 
+    border: 2px solid #ccc;
+    width: 300px;
+}
+.myfieldclass{
+    height: 34px; 
+    border: 2px solid #ccc;
+    width: 300px;
+}
+.myfieldclass-description, .myfieldclass-features{
+    height: 100px; 
+    border: 2px solid #ccc;
+    width: 300px;
+}
+
+/*yes, one by one*/
+@media (max-width: 640px) {
+    input[type="text"] {
+        width: 100%; 
+    }
+}
+@media (max-width: 640px) {
+    input[type="email"] {
+        width: 100%; 
+    }
+}
+@media (max-width: 640px) {
+    input[type="tel"] {
+        width: 100%; 
+    }
+}
+@media (max-width: 640px) {
+    input[type="password"] {
+        width: 100%; 
+    }
+}
+
+/*responsiveness for small screens(sm)*/
+@media (max-width: 640px) {
+    .myfieldclass,
+    .myfieldclass-description,
+    .myfieldclass-features {
+      width: 100%; 
+    }
+  }
+
