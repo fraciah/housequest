@@ -36,6 +36,6 @@ HouseQuest is a web-based platform that connects landlords with potential tenant
 * To grant a user admin privileges(viewing the admin dashboard):
   1. Create a new user by following the normal user registration process.
   2. In the Django admin panel, navigate to the `Users` section and find the newly created user. Click on their username to view their           details.
-  3. In the user details page, check the `is_admin` checkbox to grant the user admin privileges.
+  3. In the user details page, check the `is_admin` checkbox to grant the user admin privileges and uncheck both `is_landlord` and `is_tenant`.
   4. The new admin user will now be able to view the admin summaries of the website.
   5. (Optional) Make sure to tick `is_admin` for the original admin user to avoid displaying them in the list of users in summaries.
