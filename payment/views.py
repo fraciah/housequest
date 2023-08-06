@@ -45,7 +45,6 @@ def book_listing(request,pk):
         transaction_desc = 'Payment of booking fee'
         callback_url = f'https://7964-105-166-142-54.ngrok-free.app/payment/{pk}/mpesa_callback/'
         response = cl.stk_push(phone_number, amount, account_reference, transaction_desc, callback_url)      
-        print("fweaijdk")
         print(response)
     return HttpResponse(response)
 
